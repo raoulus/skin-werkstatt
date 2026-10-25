@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#23262f" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Skin-Werkstatt</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar">
+        <h1><span class="logo" aria-hidden="true"></span>Skin-Werkstatt</h1>
+        <div class="topbar-actions">
+          <button id="btn-undo" class="icon" title="Rückgängig">↶</button>
+          <button id="btn-redo" class="icon" title="Wiederholen">↷</button>
+          <button id="btn-gallery">🖼️ Galerie</button>
+          <button id="btn-save">💾 Speichern</button>
+          <button id="btn-import" class="icon" title="PNG-Datei öffnen">📂</button>
+          <button id="btn-download" class="primary">⬇️ Ins Spiel</button>
+        </div>
+      </header>
+
+      <nav class="tools" id="tools">
+        <button data-tool="pencil" class="active" title="Stift">✏️<span>Stift</span></button>
+        <button data-tool="eraser" title="Radierer">🧽<span>Radierer</span></button>
+        <button data-tool="fill" title="Füllen">🪣<span>Füllen</span></button>
+        <button data-tool="picker" title="Farbe aufnehmen">💧<span>Pipette</span></button>
+        <button data-tool="rotate" title="Nur drehen">✋<span>Drehen</span></button>
+        <hr />
+        <button id="btn-mirror" class="toggle" title="Links und rechts gleichzeitig malen">
+          🪞<span>Spiegeln</span>
+        </button>
+        <button id="btn-layer" class="toggle" title="Auf der äußeren Schicht malen (Jacke, Hut, Haare)">
+          🧥<span>Außen malen</span>
+        </button>
+        <button id="btn-overlay" class="toggle active" title="Äußere Schicht in der Vorschau zeigen">
+          👁️<span>Außen zeigen</span>
+        </button>
+      </nav>
+
+      <main class="viewport" id="viewport">
+        <div class="sky" aria-hidden="true">
+          <i class="cloud c1"></i><i class="cloud c2"></i><i class="cloud c3"></i><i class="cloud c4"></i>
+        </div>
+        <div class="poses" id="poses"></div>
+        <div class="hint" id="hint">Ein Finger auf der Figur malt, daneben drehst du. Zwei Finger zoomen.</div>
+      </main>
+
+      <aside class="panel">
+        <section class="card random-card">
+          <h2>Zufalls-Skin</h2>
+          <div class="themes" id="themes"></div>
+          <div class="locks">
+            <span>Behalten:</span>
+            <button data-lock="head" class="toggle">🔓 Kopf</button>
+            <button data-lock="top" class="toggle">🔓 Oberteil</button>
+            <button data-lock="legs" class="toggle">🔓 Hose</button>
+          </div>
+          <button id="btn-roll" class="primary big">🎲 Würfeln!</button>
+        </section>
+        <section class="card">
+          <h2>Farbe</h2>
+          <div class="color-row">
+            <label class="color-pick" title="Eigene Farbe">
+              <input type="color" id="color" value="#e53935" />
+            </label>
+            <div class="swatches" id="swatches"></div>
+          </div>
+          <div class="recent" id="recent"></div>
+        </section>
+        <section class="card">
+          <h2>Hüte <small>in deiner Farbe</small></h2>
+          <div class="hats" id="hats"></div>
+        </section>
+        <details class="card" id="flat-card">
+          <summary>
+            <h2>Bastelbogen <small>für Profis</small></h2>
+          </summary>
+          <p class="explain">
+            So sieht der Skin als Bild aus: jeder Körperteil aufgeklappt wie ein Würfel aus Papier. Du kannst auch hier
+            malen. Gerade aktiv: <b id="layer-label">Grundschicht</b>
+          </p>
+          <canvas id="flat" width="512" height="512"></canvas>
+          <div class="flat-info" id="flat-info">Fahre über das Bild, um zu sehen, welcher Teil das ist.</div>
+        </details>
+        <section class="card">
+          <h2>Figur</h2>
+          <div class="seg" id="model-type">
+            <button data-slim="0" class="active">Steve <small>breit</small></button>
+            <button data-slim="1">Alex <small>schmal</small></button>
+          </div>
+          <div class="row">
+            <button id="btn-default">🙂 Start-Skin</button>
+            <button id="btn-clear">🗑️ Leer</button>
+            <button id="btn-spin" class="toggle">🔄 Drehen</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <input type="file" id="file" accept="image/png" hidden />
+
+    <dialog id="save-dialog" class="sheet">
+      <div>
+        <h2>In die Galerie 💾</h2>
+        <img id="save-preview" class="save-preview" alt="Vorschau" />
+        <label class="field">
+          <span>Name</span>
+          <input id="save-name" maxlength="40" autocomplete="off" />
+        </label>
+        <div class="field">
+          <span>Schlagwörter <small>(optional)</small></span>
+          <div class="chips" id="save-tags"></div>
+        </div>
+        <div class="row">
+          <button id="btn-save-confirm" class="primary">💾 Speichern</button>
+          <button id="btn-save-copy">📄 Als neuen Skin</button>
+          <button id="btn-save-cancel">Abbrechen</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="gallery-dialog" class="sheet gallery">
+      <div>
+        <header class="gallery-head">
+          <h2>🖼️ Meine Galerie <small id="gallery-count"></small></h2>
+          <div class="row">
+            <button id="btn-gallery-new">✨ Neuer Skin</button>
+            <button id="btn-gallery-close" class="icon" title="Schließen">✕</button>
+          </div>
+        </header>
+        <div class="chips" id="gallery-filter"></div>
+        <div class="gallery-grid" id="gallery-grid"></div>
+        <p class="explain">Die Galerie liegt nur auf diesem Gerät, in diesem Browser.</p>
+      </div>
+    </dialog>
+
+    <dialog id="export-dialog">
+      <h2>Ab ins Spiel! 🎮</h2>
+      <div class="seg" id="export-tabs">
+        <button data-tab="skin" class="active">🧍 Skin (PNG)</button>
+        <button data-tab="pack">🧩 Posen-Pack</button>
+      </div>
+
+      <section data-panel="skin">
+        <img id="export-preview" alt="Skin-Vorschau" />
+        <ol>
+          <li id="step-share">Tippe auf <b>In Fotos sichern</b> (oder speichere die Datei).</li>
+          <li id="step-hold" hidden>Drücke lange auf das Bild oben → <b>Zu Fotos hinzufügen</b>.</li>
+          <li>Öffne Minecraft → <b>Umkleide</b> → <b>Klassische Skins</b>.</li>
+          <li>Bei <b>Eigene</b> auf das leere Feld → <b>Neuen Skin wählen</b>.</li>
+          <li>Bild auswählen und <b id="export-model">breites</b> Modell nehmen.</li>
+        </ol>
+        <div class="row">
+          <button id="btn-share" class="primary">📲 In Fotos sichern</button>
+          <button id="btn-save-file">💾 Datei speichern</button>
+        </div>
+      </section>
+
+      <section data-panel="pack" hidden>
+        <p class="explain">
+          Ein Resource Pack ändert, wie <b>deine</b> Figur im Spiel die Arme hält. Das siehst nur du, und nur in Welten
+          mit diesem Pack. Auf Servern wie Hive klappt es meistens nicht.
+        </p>
+        <div class="themes" id="pack-poses"></div>
+        <ol>
+          <li>Pose wählen und auf <b>Pack herunterladen</b> tippen.</li>
+          <li>
+            In der <b>Dateien</b>-App unter <b>Downloads</b> die <b>.mcpack</b>-Datei antippen. Minecraft öffnet sich
+            und importiert sie.
+          </li>
+          <li>In Minecraft: <b>Einstellungen</b> → <b>Globale Ressourcen</b> → Pack <b>aktivieren</b>.</li>
+          <li>Welt starten und mit <b>F5</b> bzw. der Kamera-Einstellung in die Ansicht von außen wechseln.</li>
+        </ol>
+        <div class="row">
+          <button id="btn-pack" class="primary">🧩 Pack herunterladen</button>
+        </div>
+      </section>
+
+      <div class="row dialog-close">
+        <button id="btn-close-dialog">Schließen</button>
+      </div>
+    </dialog>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

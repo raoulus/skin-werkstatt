@@ -1,0 +1,23 @@
+{
+  "name": "minecraft-skin-creator",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc && vite build",
+    "preview": "vite preview --host",
+    "format": "prettier --write .",
+    "check": "tsc && prettier --check ."
+  },
+  "dependencies": {
+    "fflate": "0.8.3",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.180.0",
+    "prettier": "3.9.10",
+    "typescript": "^5.9.0",
+    "vite": "^7.1.0"
+  }
+}
