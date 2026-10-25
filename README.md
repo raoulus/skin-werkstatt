@@ -5,6 +5,16 @@ Ein Minecraft-Skin-Editor als Webseite, gemacht fürs iPad und Minecraft **Bedro
 
 Skins selbst malen oder per Würfel erzeugen, in 3D mit Posen anschauen und als PNG ins Spiel holen.
 
+**▶️ Ausprobieren: https://raoulus.github.io/skin-werkstatt/**
+
+![Editor mit Ritter-Skin in der Pose „Arme vorne“](docs/screenshots/editor.png)
+
+| Galerie                                                          | iPad hochkant                                                             |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| ![Galerie mit gespeicherten Skins](docs/screenshots/galerie.png) | ![Ansicht auf dem iPad im Hochformat](docs/screenshots/ipad-hochkant.png) |
+
+![Export-Dialog mit Posen-Pack](docs/screenshots/posen-pack.png)
+
 ## Funktionen
 
 - **3D-Ansicht** auf einer Grasblock-Plattform, mit Posen: Stehen, **Arme vorne**, Zombie, Laufen,
@@ -60,7 +70,8 @@ npm run preview   # gebaute Seite lokal ansehen
 ```
 
 Das Ergebnis in `dist/` ist eine rein statische Seite mit relativen Pfaden, ganz ohne Server.
-Sie läuft z. B. auf **GitHub Pages**: den Inhalt von `dist/` veröffentlichen, fertig.
+Bei jedem Push auf `main` prüft und baut der Workflow `.github/workflows/deploy.yml` die Seite und
+veröffentlicht sie auf **GitHub Pages**.
 
 ## Aufbau
 
