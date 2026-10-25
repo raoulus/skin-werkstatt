@@ -19,7 +19,7 @@ import { HATS, applyHat } from './hats';
 import { THEMES, generateSkin, type LockGroup } from './randomSkin';
 import { makeGrassPlatform } from './world';
 import { initGallery } from './gallery';
-import { $, loadImage, saveBlob } from './ui';
+import { $, loadImage, saveBlob, toast } from './ui';
 import { PACK_POSES, buildPosePack } from './resourcePack';
 
 type Tool = 'pencil' | 'eraser' | 'fill' | 'picker' | 'rotate';
@@ -61,6 +61,11 @@ const state = {
 // Bezug zur Galerie: welcher gespeicherte Skin gerade offen ist und ob er Änderungen hat.
 let currentId: string | null = null;
 let dirty = false;
+
+/** Ein komplett neuer Skin (Würfeln, Leer, Import …) überschreibt beim Speichern nichts. */
+function detachFromGallery() {
+  currentId = null;
+}
 
 // ---------- Skin-Textur ----------
 
@@ -156,6 +161,11 @@ function resize() {
   renderer.setSize(w, h);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
+  // Bei schmaler Ansicht (iPad hochkant) weiter weg, damit Kopf und Arme ins Bild passen.
+  const narrow = window.innerWidth <= 900;
+  const distance = 88 * (narrow ? 1.2 : 1) * Math.min(1.9, Math.max(1, 1.2 / camera.aspect));
+  camera.position.sub(controls.target).setLength(distance).add(controls.target);
+  controls.update();
 }
 new ResizeObserver(resize).observe(viewport);
 
@@ -518,12 +528,14 @@ $('#btn-default').addEventListener('click', () => {
   skin.snapshot();
   drawDefaultSkin(skin.ctx, state.slim);
   skin.changed();
+  detachFromGallery();
   save();
 });
 $('#btn-clear').addEventListener('click', () => {
   skin.snapshot();
   skin.clear();
   skin.changed();
+  detachFromGallery();
   save();
 });
 
@@ -595,6 +607,7 @@ function roll() {
   skin.snapshot();
   generateSkin(skin.ctx, state.slim, state.theme, state.locked);
   skin.changed();
+  detachFromGallery();
   ensureOverlayVisible();
   save();
   hideHint();
@@ -628,9 +641,10 @@ fileInput.addEventListener('change', async () => {
     skin.snapshot();
     skin.loadImage(img);
     skin.changed();
+    detachFromGallery();
     save();
   } catch {
-    alert('Das Bild ist kein Minecraft-Skin (64×64 oder 64×32 Pixel).');
+    toast('Das Bild ist kein Minecraft-Skin (64×64 oder 64×32 Pixel).');
   }
 });
 

@@ -353,7 +353,8 @@ button.icon {
 }
 .locks button {
   flex: 1;
-  font-size: 13px;
+  white-space: nowrap;
+  font-size: 12px;
   min-height: 38px;
   padding: 6px 4px 9px;
 }
@@ -518,7 +519,7 @@ dialog h2 {
   font: 700 24px var(--pixel);
   text-align: center;
 }
-dialog img {
+#export-preview {
   -webkit-touch-callout: default;
   -webkit-user-select: auto;
   user-select: auto;
@@ -615,7 +616,7 @@ dialog.gallery {
 }
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 12px;
 }
 .skin-card {
@@ -673,7 +674,7 @@ dialog.gallery {
   padding-right: 4px;
 }
 button.icon-sm {
-  width: 40px;
+  width: 34px;
   padding-left: 0;
   padding-right: 0;
   flex: none;
@@ -695,9 +696,6 @@ button.danger {
   width: 120px;
   height: 156px;
   margin: 0 auto 12px;
-}
-dialog img.save-preview {
-  image-rendering: auto;
 }
 .field {
   display: block;
