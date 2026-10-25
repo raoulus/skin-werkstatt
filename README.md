@@ -95,3 +95,24 @@ veröffentlicht sie auf **GitHub Pages**.
 Technik: [Vite](https://vite.dev), TypeScript, [Three.js](https://threejs.org), [fflate](https://github.com/101arrowz/fflate) für ZIP. Kein Backend.
 
 Der Gesamtplan und der aktuelle Stand stehen in [`docs/PLAN.md`](docs/PLAN.md).
+
+## Entstehung mit Claude Code
+
+Die App wurde am 25.10.2026 in rund 80 Minuten (15:04–16:25 Uhr) zusammen mit
+[Claude Code](https://claude.com/claude-code) gebaut, Modell Claude Opus 5.5. Die Zahlen stammen aus den
+lokalen Sitzungsprotokollen. Doppelt gespeicherte Antworten aus fortgesetzten Sitzungen sind nur einmal gezählt.
+
+| Kennzahl                                    |                         Wert |
+| ------------------------------------------- | ---------------------------: |
+| Antworten von Claude                        |                          105 |
+| Tool-Aufrufe (Dateien schreiben, Befehle …) |                          109 |
+| Ausgabe-Tokens (von Claude geschrieben)     |                      173.416 |
+| Neue Eingabe-Tokens                         |                          210 |
+| Eingabe-Tokens in den Cache geschrieben     |                      315.743 |
+| Eingabe-Tokens aus dem Cache gelesen        |                   16.721.109 |
+| **Tokens insgesamt**                        |              **≈ 17,2 Mio.** |
+| Quellcode (TypeScript, CSS, HTML)           | ≈ 3.900 Zeilen in 14 Modulen |
+
+Der Großteil der Tokens sind Cache-Lesezugriffe: Bei jedem Schritt liest das Modell den bisherigen
+Gesprächsverlauf erneut, das meiste davon kommt günstig aus dem Cache. Stand der Zahlen: vor dem
+Hinzufügen dieses Abschnitts.
